@@ -26,7 +26,15 @@ android {
     namespace "com.example.to_do_app"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
+    defaultConfig {
 
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            multiDexKeepProguard file('multidex-config.txt')
+        }
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

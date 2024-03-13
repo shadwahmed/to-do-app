@@ -1,17 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:to_do_app/firebase/firebase_function.dart';
+import 'package:to_do_app/tabs/taskModel.dart';
 
 class AddTaskBouttomSheet extends StatefulWidget {
-   AddTaskBouttomSheet({super.key});
+  AddTaskBouttomSheet({super.key});
 
   @override
   State<AddTaskBouttomSheet> createState() => _AddTaskBouttomSheetState();
 }
 
 class _AddTaskBouttomSheetState extends State<AddTaskBouttomSheet> {
-  DateTime chosenDate =DateTime.now();
-  var tittleController =TextEditingController();
-  var descriptionController =TextEditingController();
+  DateTime chosenDate = DateTime.now();
+  var tittleController = TextEditingController();
+  var descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +84,7 @@ class _AddTaskBouttomSheetState extends State<AddTaskBouttomSheet> {
                   selectDate(context);
                 },
                 child: Text(
-                  "${chosenDate.toString().substring(0,10)}",
+                  "${chosenDate.toString().substring(0, 10)}",
                   style: TextStyle(
                     fontWeight: FontWeight.w200,
                     fontSize: 30,
@@ -97,7 +99,16 @@ class _AddTaskBouttomSheetState extends State<AddTaskBouttomSheet> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xff5D9CEC),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  TaskModel model = TaskModel(
+                    title: tittleController.text,
+                    date: chosenDate.millisecondsSinceEpoch,
+                    description: descriptionController.text,
+                    isDone: false,
+                  );
+                  FirebaseFunctions.addTask(model);
+
+                },
                 child: Text(
                   "Add Task",
                   style: TextStyle(color: Colors.white, fontSize: 20),
@@ -108,17 +119,15 @@ class _AddTaskBouttomSheetState extends State<AddTaskBouttomSheet> {
     );
   }
 
-  selectDate(BuildContext context) async{
+  selectDate(BuildContext context) async {
     DateTime? selectedDate = await showDatePicker(
         context: context,
         initialDate: chosenDate,
         firstDate: DateTime.now(),
         lastDate: DateTime.now().add(Duration(days: 360)));
-    if(selectedDate!=null){
-      chosenDate=selectedDate;
-      setState(() {
-
-      });
+    if (selectedDate != null) {
+      chosenDate = selectedDate;
+      setState(() {});
     }
   }
 }
