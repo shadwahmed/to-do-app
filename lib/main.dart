@@ -18,10 +18,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: SplashScreen.routeName,
+      initialRoute: HomeScreen.routeName,
       debugShowCheckedModeBanner: false,
       routes: {
-        SplashScreen.routeName: (context) => SplashScreen(),
+        //SplashScreen.routeName: (context) => SplashScreen(),
         HomeScreen.routeName: (context) => HomeScreen(),
       },
     );

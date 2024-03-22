@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:to_do_app/tabs/taskModel.dart';
 
 class TaskItem extends StatelessWidget {
-  const TaskItem({super.key});
+  TaskModel taskModel;
+   TaskItem({required this.taskModel,super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -60,14 +62,14 @@ class TaskItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Text tittle",
+                        taskModel.title??'',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 20,
                         ),
                       ),
-                      Text("Text description"),
+                      Text(taskModel.description??''),
                     ],
                   ),
                 ),

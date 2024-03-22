@@ -11,8 +11,8 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context)
   {
-    Timer(Duration(seconds: 4),
-            () => Navigator.pushNamed(context, 'homeScreen'));
+    Timer(Duration(seconds: 1),
+            () => Navigator.pushNamed(context,'homeScreen'));
     return Container(
       color: Color(0xffDFECDB),
       child: Column(
