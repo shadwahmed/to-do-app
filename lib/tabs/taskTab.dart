@@ -49,7 +49,7 @@ class _TaskTabState extends State<TaskTab> {
               var tasks =
                   snapshot.data?.docs.map((e) => e.data()).toList() ?? [];
               if (tasks.isEmpty) {
-                return Center(child: CircularProgressIndicator());
+                return Center(child: Text('No Tasks'));
               }
               return ListView.separated(
                   itemBuilder: (context, index) {

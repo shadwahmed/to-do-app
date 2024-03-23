@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:to_do_app/firebase/firebase_function.dart';
 import 'package:to_do_app/tabs/taskModel.dart';
 
 class TaskItem extends StatelessWidget {
@@ -15,7 +16,9 @@ class TaskItem extends StatelessWidget {
           motion: DrawerMotion(),
           children: [
             SlidableAction(
-              onPressed: (context) {},
+              onPressed: (context) {
+                FirebaseFunctions.deleteTask(taskModel.id??'');
+              },
               backgroundColor: Colors.red,
               autoClose: true,
               icon: Icons.delete,
@@ -50,7 +53,7 @@ class TaskItem extends StatelessWidget {
                   height: 162,
                   width: 5,
                   decoration: BoxDecoration(
-                    color: Color(0xff5D9CEC),
+                    color: taskModel.isDone! ?Colors.green:Color(0xff5D9CEC),
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
@@ -73,19 +76,25 @@ class TaskItem extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Color(0xff5D9CEC),
-                    ),
-                    height: 34,
-                    width: 69,
-                    child: Icon(
-                      Icons.done,
-                      color: Colors.white,
-                      size: 30,
-                      weight: 15,
-                    )),
+                InkWell(
+                  onTap:(){
+                    taskModel.isDone=true;
+                    FirebaseFunctions.updateTask(taskModel);
+                  },
+                  child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: taskModel.isDone! ?Colors.green:Color(0xff5D9CEC),
+                      ),
+                      height: 34,
+                      width: 69,
+                      child: Icon(
+                        Icons.done,
+                        color: Colors.white,
+                        size: 30,
+                        weight: 15,
+                      )),
+                ),
               ],
             ),
           ),

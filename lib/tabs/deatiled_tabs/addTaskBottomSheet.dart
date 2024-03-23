@@ -102,11 +102,10 @@ class _AddTaskBouttomSheetState extends State<AddTaskBouttomSheet> {
                 onPressed: () {
                   TaskModel model = TaskModel(
                     title: tittleController.text,
-                    date: chosenDate.millisecondsSinceEpoch,
+                    date: DateUtils.dateOnly(chosenDate).millisecondsSinceEpoch,
                     description: descriptionController.text);
-                      FirebaseFunctions.addTask(model).then((value) => {
-                        Navigator.pop(context)
-                      });
+                      FirebaseFunctions.addTask(model);
+                        Navigator.pop(context);
                 },
                 child: Text(
                   "Add Task",
