@@ -5,7 +5,6 @@ import 'package:to_do_app/tabs/taskModel.dart';
 import 'package:to_do_app/user_model.dart';
 
 class FirebaseFunctions {
-
   static CollectionReference<UserModel> getUsersCollection() {
     return FirebaseFirestore.instance
         .collection(UserModel.collectionName)
@@ -32,10 +31,10 @@ class FirebaseFunctions {
     );
   }
 
-  static Future<void>addUser(UserModel user){
+  static Future<void> addUser(UserModel user) {
     var collection = getUsersCollection();
     var docRef = collection.doc(user.id);
-   return docRef.set(user);
+    return docRef.set(user);
   }
 
   static Future<void> addTask(TaskModel model) {
@@ -47,8 +46,10 @@ class FirebaseFunctions {
 
   static Stream<QuerySnapshot<TaskModel>> getTasks(DateTime date) {
     return getTasksCollection()
+        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .where("date",
             isEqualTo: DateUtils.dateOnly(date).millisecondsSinceEpoch)
+        .orderBy("title",descending: true)
         .snapshots();
   }
 
@@ -60,35 +61,66 @@ class FirebaseFunctions {
     return getTasksCollection().doc(model.id).update(model.toJson());
   }
 
-  static createUserAccount(String email, String password,String phone, String userName) async {
+  static Future <UserModel?> readUser()async{
+    String id = FirebaseAuth.instance.currentUser!.uid;
+    DocumentSnapshot<UserModel> documentSnapshot = await getUsersCollection().doc(id).get();
+   return documentSnapshot.data();
+  }
+  static createUserAccount(
+      {required String email,
+      required String password,
+      required String phone,
+      required String userName,
+      required Function onSuccess,
+      required Function onError}) async {
     try {
       final credential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      UserModel user =UserModel(id: credential.user?.uid??"", email: email, userName: userName,phone: phone);
+      credential.user!.sendEmailVerification();
+      FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      UserModel user = UserModel(
+          id: credential.user?.uid ?? "",
+          email: email,
+          userName: userName,
+          phone: phone);
+
+      addUser(user).then((value) {
+        onSuccess();
+      });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        onError(e.message);
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        onError(e.message);
       }
+      onError(e.message);
     } catch (e) {
-      print(e);
+      onError("Something went wrong");
     }
   }
 
-  static login(String email, String password) async {
+  static login(String email, String password, Function onSuccess,
+      Function onError) async {
     try {
       final credential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+      if (credential.user!.emailVerified) {
+        onSuccess();
+      } else {
+        onError("Please check your email and verify");
       }
+    } on FirebaseAuthException catch (e) {
+      onError(e.message);
     }
   }
+
+  static void logOut() async
+  {
+    await FirebaseAuth.instance.signOut();
+  }
+
+
 }

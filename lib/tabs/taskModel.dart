@@ -1,16 +1,18 @@
 class TaskModel {
-  static const String collectionName='Tasks';
+  static const String collectionName = 'Tasks';
 
   String? id;
   String? title;
   String? description;
   int? date;
   bool? isDone;
+  String userId;
 
   TaskModel(
       {this.id = "",
       required this.title,
       required this.date,
+      required this.userId,
       required this.description,
       this.isDone = false});
 
@@ -18,6 +20,7 @@ class TaskModel {
       : this(
           title: json['title'],
           date: json['date'],
+          userId: json['userId'],
           description: json['description'],
           isDone: json['isDone'],
         );
@@ -25,6 +28,7 @@ class TaskModel {
   Map<String, dynamic> toJson() {
     return {
       "id": id,
+      "userId": userId,
       "description": description,
       "title": title,
       "date": date,

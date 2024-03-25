@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_app/auth/auth.dart';
+import 'package:to_do_app/firebase/firebase_function.dart';
+import 'package:to_do_app/providers/my_provider.dart';
 import 'package:to_do_app/tabs/settingTab.dart';
 import 'package:to_do_app/tabs/taskTab.dart';
 
@@ -16,15 +20,24 @@ class _HomeScreenState extends State<HomeScreen> {
   int index = 0;
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<MyProvider>(context);
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
-        title: Text("To Do List",
+        title: Text("To Do List ${provider.userModel?.userName}",
             style: GoogleFonts.poppins(
               fontSize: 22,
               fontWeight: FontWeight.w700,
               color: Colors.white,
             )),
+        actions: [
+          IconButton(
+              onPressed: () {
+                FirebaseFunctions.logOut();
+                Navigator.pushNamedAndRemoveUntil(context, AuthScreen.routeName, (route) => false);
+              },
+              icon: Icon(Icons.logout))
+        ],
         backgroundColor: Color(0xff5D9CEC),
       ),
       backgroundColor: Color(0xffDFECDB),
@@ -73,8 +86,8 @@ class _HomeScreenState extends State<HomeScreen> {
               isScrollControlled: true,
               builder: (context) {
                 return Container(
-                  padding: EdgeInsets.only(bottom:
-                  MediaQuery.of(context).viewInsets.bottom),
+                    padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom),
                     child: AddTaskBouttomSheet());
               });
         },

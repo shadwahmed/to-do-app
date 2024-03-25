@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_app/firebase/firebase_function.dart';
@@ -102,6 +103,7 @@ class _AddTaskBouttomSheetState extends State<AddTaskBouttomSheet> {
                 onPressed: () {
                   TaskModel model = TaskModel(
                     title: tittleController.text,
+                    userId:FirebaseAuth.instance.currentUser!.uid,
                     date: DateUtils.dateOnly(chosenDate).millisecondsSinceEpoch,
                     description: descriptionController.text);
                       FirebaseFunctions.addTask(model);
