@@ -1,0 +1,35 @@
+name: Validate PR Title
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+
+jobs:
+  validate-pr-title:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Validate PR Title
+        run: |
+          echo "Validating PR title..."
+          pr_title="${{ github.event.pull_request.title }}"
+          
+          # Define the regex pattern for allowed PR titles
+          pattern='^(fix|release|feat|hotfix|build|test)\([a-zA-Z0-9\-]+\): [A-Z]+-[0-9]+-.+'
+
+          if [[ "$pr_title" =~ $pattern ]]; then
+            echo "✅ PR title '$pr_title' is valid."
+          else
+            echo "❌ PR title '$pr_title' is invalid. Please use the format:"
+            echo "  type(scope): {TicketNum}-task name"
+            echo "  allowed types: fix, release, feat, hotfix, build, test"
+            echo "  allowed scopes: {project-ID-ticket num}, JIRA-\\d+, [A-Z]+-\\d+"
+            echo "  example: feat(ECOM-27): Initialize Project"
+            exit 1
+          fi
