@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
     var provider = Provider.of<MyProvider>(context);
     return MaterialApp(
       initialRoute: provider.firebaseUser != null
-          ?HomeScreen.routeName
+          ? HomeScreen.routeName
           : AuthScreen.routeName,
       debugShowCheckedModeBanner: false,
       routes: {
